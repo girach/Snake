@@ -54,18 +54,29 @@ class dude:
 		for i in range(0,self.length):
 			surface.blit(image,(self.x[i],self.y[i]))
 			
-
+class Apple:
+	
+	x=0
+	y=0
+	speed = 44
+	
+	def __init__(self,x,y):
+		self.x = x * self.speed
+		self.y = y * self.speed
+	
+	def draw(self, surface, image):
+		surface.blit(image,(self.x, self.y))
 class pygame_window:
 	
 	height = 600
 	width = 800
-	player = 0
 	
 	def __init__(self):
 		self.running = True
 		self.display = None
 		self.image = None
 		self.player = dude(8) #Base length
+		self.apple = Apple(5,5)
 		#print("Helo")
 	
 	def on_start(self):
@@ -75,6 +86,7 @@ class pygame_window:
 		pygame.display.set_caption('First Snake game')
 		self.running = True
 		self.image = pygame.image.load("snake.png").convert() # convert() -- Make loading things faster..
+		self.apple_img = pygame.image.load("apple.png").convert()
 		#print("on_start_completed")
 			
 	def on_loop(self): # Updates the positions
@@ -84,6 +96,7 @@ class pygame_window:
 	def printer(self): # Fills the screen appropriately
 		self.display.fill((0,0,0))
 		self.player.draw(self.display, self.image)
+		self.apple.draw(self.display, self.apple_img)
 		pygame.display.flip();
 		
 	def close(self):
