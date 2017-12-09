@@ -159,8 +159,8 @@ def collision(x1,y1,x2,y2,bsize):
  
 class pygame_window:
  
-    windowWidth = 800
-    windowHeight = 600
+    windowWidth = 1000
+    windowHeight = 1000
     player = 0
     apple = 0
  
@@ -174,6 +174,11 @@ class pygame_window:
         self.apple = Apple(8,5)
         self.enemy = Enemy(5) #enemy 
         
+        print "You're the one operating RED snake and BLACK one is CPU"
+        print "YOU ---- RED"
+        print "CPU ---- BLACK" + '\n'
+        time.sleep (2)
+        
         #statistics of the game
         
         self.total = 1
@@ -183,7 +188,7 @@ class pygame_window:
         pygame.init()
         self.display = pygame.display.set_mode((self.windowWidth,self.windowHeight), pygame.HWSURFACE)
  
-        pygame.display.set_caption('First Snake game')
+        pygame.display.set_caption('First snake game')
         self.running = True
         self.image = pygame.image.load("snake.png").convert() # convert() -- Make loading things faster..
         self.apple_img = pygame.image.load("apple.png").convert()
@@ -201,25 +206,35 @@ class pygame_window:
  
         # If snake collides with apple
         for i in range(0,self.player.length):
+			flag = 0	
 			if collision(self.apple.x,self.apple.y,self.player.x[i], self.player.y[i],25):
-				self.apple.x = randint(2,9) * 35
-				self.apple.y = randint(2,9) * 35
+				flag = flag + 1
+				self.apple.x = randint(2,9) * 70
+				self.apple.y = randint(2,9) * 70
 				self.player.length = self.player.length + 1
- 
+				if flag == 1:
+					self.score = self.score + 1
+					self.total = self.total + 1
+
         # If enemy collides with the apple
-        for i in range(0,self.player.length):
-            if collision(self.apple.x,self.apple.y,self.enemy.x[i], self.enemy.y[i],25):
-                self.apple.x = randint(2,9) * 35
-                self.apple.y = randint(2,9) * 35
-                #self.enemy.length = self.enemy.length + 1
- 
+        for i in range(0,self.enemy.length):
+        	flag = 0
+        	if collision(self.apple.x,self.apple.y,self.enemy.x[i], self.enemy.y[i],25):
+				flag = flag + 1
+				self.apple.x = randint(2,9) * 70
+				self.apple.y = randint(2,9) * 70
+				if flag == 1:
+					self.total = self.total + 1
+                
  
         # If snake collides itself
         for i in range(2,self.player.length):
             if collision(self.player.x[0],self.player.y[0],self.player.x[i], self.player.y[i],25):
                 print "You lose! Collision: "
-                print "x[0] (" + str(self.player.x[0]) + "," + str(self.player.y[0]) + ")"  
-                print "x[" + str(i) + "] (" + str(self.player.x[i]) + "," + str(self.player.y[i]) + ")"  
+                print "Head collided with Segment no." + str(i) + '\n'
+                #print "x[" + str(i) + "] (" + str(self.player.x[i]) + "," + str(self.player.y[i]) + ")"  
+                print "Your ate " + str(self.score) + " out of " + str(self.total) + " apples";
+                print "Your agility:" + str(round(self.score/float(self.total),2)) + '\n'
                 exit(0)
  
         pass
@@ -227,11 +242,11 @@ class pygame_window:
     def printer(self):  # Fills the screen appropriately
         self.display.fill((0,0,0))
         self.display.blit(pygame.image.load("Back.png").convert(),(0,0))
-        '''font = pygame.font.Font(None, 24)
-        survivedtext = font.render("Total Apples : " + str(self.total)+ ", Your score : " + str(self.score)+" and Accuracy: " + str(round(self.score/float(self.total),2)),True,(255,0,0))
+        font = pygame.font.Font(None, 24)
+        survivedtext = font.render("Total Apples : " + str(self.total)+ ", Your score : " + str(self.score)+" and Agility: " + str(round(self.score/float(self.total),2)),True,(255,0,0))
         textRect = survivedtext.get_rect()
-        textRect.topright=[550,5]
-        self.display.blit(survivedtext, textRect)'''
+        textRect.topright=[950,5]
+        self.display.blit(survivedtext, textRect)
         
         self.player.draw(self.display, self.image)
         self.apple.draw(self.display, self.apple_img)
@@ -239,6 +254,8 @@ class pygame_window:
         pygame.display.flip()
  
     def close(self):  # Quit the game
+    	print "Your ate " + str(self.score) + " out of " + str(self.total) + " apples";
+        print "Your agility:" + str(round(self.score/float(self.total),2)) + '\n'
         pygame.quit()
  
     def on_execute(self):
@@ -267,9 +284,9 @@ class pygame_window:
             self.on_loop()
             self.printer()
  
-            time.sleep (25.0 / 1000.0); # Another factor which determines the speed of the snake.
+            time.sleep (10.0 / 1000.0); # Another factor which determines the speed of the snake.
         self.close()
- 
+
 if __name__ == "__main__" :
     game = pygame_window()
     game.on_execute()
